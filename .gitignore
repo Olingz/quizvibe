@@ -1,0 +1,24 @@
+# Angular
+/dist
+/tmp
+/out-tsc
+/node_modules
+
+# IDE
+/.idea
+/.vscode
+*.swp
+*.swo
+
+# Environment
+/environments/*.local.ts
+/environments/*.prod.ts
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System Files
+.DS_Store
+Thumbs.db 
