@@ -22,87 +22,180 @@ import { AddQuizResultComponent } from '../add-quiz-result/add-quiz-result.compo
           </div>
           
           <div class="result-details">
-            <p><strong>Player:</strong> {{ result.playerName }}</p>
-            <p><strong>Score:</strong> {{ result.correctAnswers }}/{{ result.totalQuestions }}</p>
-            <p class="percentage">{{ (result.correctAnswers / result.totalQuestions * 100).toFixed(1) }}%</p>
+            <div class="detail-row">
+              <span class="label">Player:</span>
+              <span class="value">{{ result.playerName }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Score:</span>
+              <span class="value">{{ result.correctAnswers }}/{{ result.totalQuestions }}</span>
+            </div>
+            <div class="percentage-container">
+              <div class="percentage-circle" [style.background]="getPercentageColor(result)">
+                {{ (result.correctAnswers / result.totalQuestions * 100).toFixed(0) }}%
+              </div>
+            </div>
           </div>
           
-          <div *ngIf="result.quizUrl" class="quiz-link">
-            <a [href]="result.quizUrl" target="_blank">Play Quiz</a>
+          <div class="card-actions">
+            <div *ngIf="result.quizUrl" class="quiz-link">
+              <a [href]="result.quizUrl" target="_blank">
+                <i class="play-icon">▶</i>
+                Play Quiz
+              </a>
+            </div>
+            <button (click)="deleteResult(result.id!)" class="delete-btn">
+              <i class="delete-icon">×</i>
+              Delete
+            </button>
           </div>
-          
-          <button (click)="deleteResult(result.id!)" class="delete-btn">Delete</button>
         </div>
       </div>
     </div>
   `,
   styles: [`
     .results-container {
-      max-width: 800px;
+      max-width: 1000px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 2rem;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 2rem;
+      font-size: 2.5rem;
+      font-weight: 600;
+      text-align: center;
     }
     
     .results-list {
-      margin-top: 30px;
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
     }
     
     .result-card {
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .result-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
     
     .result-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .result-header h3 {
+      margin: 0;
+      color: #2c3e50;
+      font-size: 1.25rem;
+      font-weight: 600;
     }
     
     .date {
-      color: #666;
-      font-size: 0.9em;
+      color: #7f8c8d;
+      font-size: 0.9rem;
     }
     
     .result-details {
-      margin-bottom: 15px;
+      margin-bottom: 1.5rem;
     }
     
-    .percentage {
-      font-size: 1.2em;
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    
+    .label {
+      color: #7f8c8d;
+      font-size: 0.95rem;
+    }
+    
+    .value {
+      color: #2c3e50;
+      font-weight: 500;
+    }
+    
+    .percentage-container {
+      display: flex;
+      justify-content: center;
+      margin: 1.5rem 0;
+    }
+    
+    .percentage-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
       font-weight: bold;
-      color: #007bff;
-      margin-top: 10px;
+      font-size: 1.25rem;
+      background: linear-gradient(135deg, #3498db, #2980b9);
     }
     
-    .quiz-link {
-      margin: 10px 0;
+    .card-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
     }
     
     .quiz-link a {
-      color: #007bff;
+      color: #3498db;
       text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
     }
     
     .quiz-link a:hover {
-      text-decoration: underline;
+      color: #2980b9;
+    }
+    
+    .play-icon {
+      font-size: 0.8rem;
     }
     
     .delete-btn {
-      background-color: #dc3545;
+      background-color: #e74c3c;
       color: white;
       border: none;
-      padding: 5px 10px;
-      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      transition: background-color 0.2s ease;
     }
     
     .delete-btn:hover {
-      background-color: #c82333;
+      background-color: #c0392b;
+    }
+    
+    .delete-icon {
+      font-size: 1.2rem;
     }
   `]
 })
@@ -119,5 +212,12 @@ export class QuizResultsListComponent implements OnInit {
 
   deleteResult(id: string): void {
     this.quizResultsService.deleteResult(id);
+  }
+
+  getPercentageColor(result: QuizResult): string {
+    const percentage = (result.correctAnswers / result.totalQuestions) * 100;
+    if (percentage >= 80) return 'linear-gradient(135deg, #2ecc71, #27ae60)';
+    if (percentage >= 60) return 'linear-gradient(135deg, #f1c40f, #f39c12)';
+    return 'linear-gradient(135deg, #e74c3c, #c0392b)';
   }
 } 
