@@ -12,6 +12,19 @@
 
   <div class="filters">
     <div class="filter-group">
+      <label>Filter by Player:</label>
+      <div class="player-chips">
+        <button 
+          *ngFor="let player of availablePlayers" 
+          class="player-chip"
+          [class.selected]="selectedPlayer === player"
+          (click)="togglePlayerFilter(player)">
+          {{ player }}
+        </button>
+      </div>
+    </div>
+
+    <div class="filter-group">
       <label for="weekFilter">Filter by Week:</label>
       <select id="weekFilter" [(ngModel)]="selectedWeek" (change)="filterResults()">
         <option value="">All Weeks</option>

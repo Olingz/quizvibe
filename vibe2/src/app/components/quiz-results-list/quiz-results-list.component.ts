@@ -23,8 +23,10 @@ export class QuizResultsListComponent implements OnInit {
   filteredResults: ResultGroup[] = [];
   availableWeeks: number[] = [];
   availableCategories: string[] = [];
+  availablePlayers: string[] = [];
   selectedWeek: number | '' = '';
   selectedCategory: string = '';
+  selectedPlayer: string = '';
   showAddForm: boolean = false;
 
   constructor(private quizResultsService: QuizResultsService) {}
@@ -42,13 +44,21 @@ export class QuizResultsListComponent implements OnInit {
   }
 
   private updateAvailableFilters(): void {
-    // Get unique weeks and categories
+    // Get unique weeks, categories, and players
     this.availableWeeks = [...new Set(this.results.map(r => r.weekNumber))].sort((a, b) => b - a);
     this.availableCategories = [...new Set(this.results.map(r => r.category))].sort();
+    this.availablePlayers = [...new Set(this.results.map(r => r.playerName))].sort();
   }
 
   filterResults(): void {
     let filtered = this.results;
+
+    // Apply player name filter
+    if (this.selectedPlayer) {
+      filtered = filtered.filter(r => 
+        r.playerName.toLowerCase().includes(this.selectedPlayer.toLowerCase())
+      );
+    }
 
     // Apply week filter
     if (this.selectedWeek) {
@@ -130,5 +140,10 @@ export class QuizResultsListComponent implements OnInit {
   onResultAdded(): void {
     this.showAddForm = false;
     this.loadResults();
+  }
+
+  togglePlayerFilter(player: string): void {
+    this.selectedPlayer = this.selectedPlayer === player ? '' : player;
+    this.filterResults();
   }
 } 
