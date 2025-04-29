@@ -32,6 +32,13 @@ h1 {
 .auth-controls {
   display: flex;
   gap: 1rem;
+  align-items: center;
+}
+
+.user-name {
+  color: #2c3e50;
+  font-weight: 500;
+  font-size: 0.875rem;
 }
 
 button {
@@ -69,5 +76,9 @@ main {
   
   h1 {
     font-size: 1.4rem;
+  }
+
+  .auth-controls {
+    flex-direction: column;
   }
 } 

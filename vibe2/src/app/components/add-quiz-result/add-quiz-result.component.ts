@@ -1,9 +1,10 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { QuizResultsService } from '../../services/quiz-results.service';
 import { QuizResult } from '../../models/quiz-result.model';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-add-quiz-result',
@@ -12,12 +13,13 @@ import { Router } from '@angular/router';
   templateUrl: './add-quiz-result.component.html',
   styleUrl: './add-quiz-result.component.css'
 })
-export class AddQuizResultComponent {
+export class AddQuizResultComponent implements OnInit {
   @Output() resultAdded = new EventEmitter<void>();
   quizText: string = '';
   newResult: Partial<QuizResult> = {
     playerName: '',
     quizName: '',
+    category: '',
     correctAnswers: 0,
     totalQuestions: 0,
     quizUrl: ''
@@ -25,8 +27,17 @@ export class AddQuizResultComponent {
 
   constructor(
     private quizResultsService: QuizResultsService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
+
+  ngOnInit() {
+    // Pre-fill player name with logged-in user's display name
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser?.displayName) {
+      this.newResult.playerName = currentUser.displayName;
+    }
+  }
 
   parseQuizText(): void {
     if (!this.quizText) return;

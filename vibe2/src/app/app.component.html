@@ -3,6 +3,7 @@
     <div class="header-content">
       <h1>Jonas and Oliver's DR Quiz Tracker</h1>
       <div class="auth-controls" *ngIf="authService.isAuthenticated()">
+        <span class="user-name">{{ authService.getCurrentUser()?.displayName || 'User' }}</span>
         <button (click)="logout()">Logout</button>
       </div>
     </div>
@@ -11,4 +12,4 @@
   <main>
     <router-outlet></router-outlet>
   </main>
-  </div>
+</div>
