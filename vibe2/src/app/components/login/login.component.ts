@@ -38,6 +38,21 @@ export class LoginComponent {
     }
   }
 
+  async loginWithGoogle(): Promise<void> {
+    if (this.isLoading) return;
+    
+    this.isLoading = true;
+    try {
+      await this.authService.loginWithGoogle();
+      this.router.navigate(['/']);
+    } catch (error) {
+      console.error('Google login failed:', error);
+      // You might want to show an error message to the user here
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
   quickLogin(): void {
     this.email = 'test@example.com';
     this.password = 'test123';

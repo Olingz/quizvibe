@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { Auth, signInWithEmailAndPassword, signOut, onAuthStateChanged, User } from 'firebase/auth';
+import { Auth, signInWithEmailAndPassword, signOut, onAuthStateChanged, User, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 
@@ -9,6 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 export class AuthService {
   private userSubject = new BehaviorSubject<User | null>(null);
   user$ = this.userSubject.asObservable();
+  private googleProvider = new GoogleAuthProvider();
 
   constructor(
     @Inject('FIREBASE_AUTH') private auth: Auth,
@@ -23,6 +24,16 @@ export class AuthService {
   async login(email: string, password: string): Promise<User> {
     try {
       const result = await signInWithEmailAndPassword(this.auth, email, password);
+      this.router.navigate(['/quiz-results']);
+      return result.user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async loginWithGoogle(): Promise<User> {
+    try {
+      const result = await signInWithPopup(this.auth, this.googleProvider);
       this.router.navigate(['/quiz-results']);
       return result.user;
     } catch (error) {
