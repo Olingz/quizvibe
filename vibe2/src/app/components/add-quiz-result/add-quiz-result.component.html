@@ -1,0 +1,33 @@
+<div class="add-result-container">
+  <h2>Add Quiz Result</h2>
+  <form (ngSubmit)="onSubmit()" #quizForm="ngForm">
+    <div class="form-group">
+      <label for="playerName">Player Name:</label>
+      <input type="text" id="playerName" name="playerName" [(ngModel)]="newResult.playerName" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="quizText">Paste Quiz Result:</label>
+      <textarea 
+        id="quizText" 
+        name="quizText" 
+        [(ngModel)]="quizText" 
+        (input)="parseQuizText()"
+        placeholder="🟦 🟦 🟦 🟦 🟦 🟦 🟦&#10;Jeg fik 7 ud af 7 rigtige i DR's nyhedsquiz&#10;Spil med på www.dr.dk/quiz/nyheder/"
+        required
+        rows="3"
+      ></textarea>
+    </div>
+    
+    <div class="preview" *ngIf="newResult.quizName">
+      <h3>Preview</h3>
+      <p><strong>Quiz:</strong> {{ newResult.quizName }}</p>
+      <p><strong>Category:</strong> {{ newResult.category }}</p>
+      <p><strong>Week:</strong> {{ newResult.weekNumber }}</p>
+      <p><strong>Score:</strong> {{ newResult.correctAnswers }}/{{ newResult.totalQuestions }}</p>
+      <p><strong>URL:</strong> {{ newResult.quizUrl }}</p>
+    </div>
+    
+    <button type="submit" [disabled]="!quizForm.form.valid">Add Result</button>
+  </form>
+</div> 

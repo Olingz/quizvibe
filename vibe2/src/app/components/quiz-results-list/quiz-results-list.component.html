@@ -1,0 +1,55 @@
+<div class="quiz-results-container">
+  <div class="header">
+    <h2>Quiz Results</h2>
+    <button (click)="showAddForm = !showAddForm" class="add-button">
+      {{ showAddForm ? 'Cancel' : 'Add New Result' }}
+    </button>
+  </div>
+
+  <div class="add-result-form" *ngIf="showAddForm">
+    <app-add-quiz-result (resultAdded)="onResultAdded()"></app-add-quiz-result>
+  </div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <label for="weekFilter">Filter by Week:</label>
+      <select id="weekFilter" [(ngModel)]="selectedWeek" (change)="filterResults()">
+        <option value="">All Weeks</option>
+        <option *ngFor="let week of availableWeeks" [value]="week">{{ week }}</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="categoryFilter">Filter by Category:</label>
+      <select id="categoryFilter" [(ngModel)]="selectedCategory" (change)="filterResults()">
+        <option value="">All Categories</option>
+        <option *ngFor="let category of availableCategories" [value]="category">{{ category }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="results-grid">
+    <div *ngFor="let group of filteredResults" class="result-group">
+      <h3>{{ group.title }}</h3>
+      <div class="results-list">
+        <div *ngFor="let result of group.results" class="result-card">
+          <div class="result-header">
+            <span class="player-name">{{ result.playerName }}</span>
+            <span class="score">{{ result.correctAnswers }}/{{ result.totalQuestions }}</span>
+          </div>
+          <div class="result-details">
+            <span class="category">{{ result.category }}</span>
+            <span class="date">{{ result.date | date:'mediumDate' }}</span>
+          </div>
+          <div class="answer-sequence">
+            <span *ngFor="let isCorrect of result.answerSequence" 
+                  [class]="isCorrect ? 'correct' : 'incorrect'">
+              {{ isCorrect ? '✓' : '✗' }}
+            </span>
+          </div>
+          <button class="delete-button" (click)="deleteResult(result.id!)">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

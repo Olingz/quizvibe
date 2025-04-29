@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { QuizResultsListComponent } from './components/quiz-results-list/quiz-results-list.component';
 import { LoginComponent } from './components/login/login.component';
+import { AddQuizResultComponent } from './components/add-quiz-result/add-quiz-result.component';
 import { inject } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { map, take } from 'rxjs/operators';
@@ -32,6 +33,11 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
+  },
+  {
+    path: 'add-quiz-result',
+    component: AddQuizResultComponent,
+    canActivate: [authGuard]
   },
   {
     path: '**',
