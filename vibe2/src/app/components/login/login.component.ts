@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -28,6 +29,12 @@ import { Router } from '@angular/router';
         <button type="submit" [disabled]="!loginForm.form.valid || isLoading" class="login-button">
           {{ isLoading ? 'Logging in... ✨' : 'Login 💕' }}
         </button>
+        
+        <div *ngIf="!environment.production" class="quick-login-container">
+          <button type="button" (click)="quickLogin()" class="quick-login-button">
+            Quick Login (Dev Mode)
+          </button>
+        </div>
         
         <div *ngIf="error" class="error-message">
           {{ error }}
@@ -114,6 +121,27 @@ import { Router } from '@angular/router';
       cursor: not-allowed;
     }
     
+    .quick-login-container {
+      margin-top: 15px;
+      text-align: center;
+    }
+    
+    .quick-login-button {
+      background: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .quick-login-button:hover {
+      background: #45a049;
+      transform: translateY(-2px);
+    }
+    
     .error-message {
       color: #ff69b4;
       margin-top: 15px;
@@ -129,6 +157,7 @@ export class LoginComponent {
   password: string = '';
   isLoading: boolean = false;
   error: string = '';
+  environment = environment;
 
   constructor(
     private authService: AuthService,
@@ -147,5 +176,11 @@ export class LoginComponent {
     } finally {
       this.isLoading = false;
     }
+  }
+
+  async quickLogin(): Promise<void> {
+    this.email = 'test@example.com';
+    this.password = 'test123';
+    await this.onSubmit();
   }
 } 

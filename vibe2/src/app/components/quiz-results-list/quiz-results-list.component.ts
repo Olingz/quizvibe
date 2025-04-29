@@ -4,6 +4,7 @@ import { QuizResult } from '../../models/quiz-result.model';
 import { CommonModule } from '@angular/common';
 import { AddQuizResultComponent } from '../add-quiz-result/add-quiz-result.component';
 
+// Standalone component with required imports
 @Component({
   selector: 'app-quiz-results-list',
   standalone: true,
@@ -15,39 +16,53 @@ import { AddQuizResultComponent } from '../add-quiz-result/add-quiz-result.compo
       <app-add-quiz-result></app-add-quiz-result>
       
       <div class="results-list">
-        <div *ngFor="let result of results" class="result-card">
-          <div class="result-header">
-            <h3>{{ result.quizName }}</h3>
-            <span class="date">{{ result.date | date:'medium' }}</span>
-          </div>
+        <!-- Group by week number -->
+        <div *ngFor="let weekGroup of getGroupedResults()" class="week-group">
+          <h2 class="week-header">Week {{ weekGroup.week }}</h2>
           
-          <div class="result-details">
-            <div class="detail-row">
-              <span class="label">Player:</span>
-              <span class="value">{{ result.playerName }}</span>
-            </div>
-            <div class="detail-row">
-              <span class="label">Score:</span>
-              <span class="value">{{ result.correctAnswers }}/{{ result.totalQuestions }}</span>
-            </div>
-            <div class="percentage-container">
-              <div class="percentage-circle" [style.background]="getPercentageColor(result)">
-                {{ (result.correctAnswers / result.totalQuestions * 100).toFixed(0) }}%
+          <!-- Group by category within each week -->
+          <div *ngFor="let categoryGroup of weekGroup.categories" class="category-group">
+            <h3 class="category-header">{{ categoryGroup.category }}</h3>
+            
+            <div class="category-results">
+              <div *ngFor="let result of categoryGroup.results" class="result-card">
+                <div class="result-header">
+                  <h3>{{ result.quizName }}</h3>
+                  <span class="date">{{ result.date | date:'medium' }}</span>
+                </div>
+                
+                <div class="result-details">
+                  <div class="detail-row">
+                    <span class="label">Player:</span>
+                    <span class="value">{{ result.playerName }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="label">Score:</span>
+                    <span class="value">{{ result.correctAnswers }}/{{ result.totalQuestions }}</span>
+                  </div>
+                  <div class="answer-boxes">
+                    <div *ngFor="let isCorrect of result.answerSequence; let i = index" 
+                         class="answer-box" 
+                         [class.correct]="isCorrect"
+                         [class.incorrect]="!isCorrect">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="card-actions">
+                  <div *ngIf="result.quizUrl" class="quiz-link">
+                    <a [href]="result.quizUrl" target="_blank">
+                      <i class="play-icon">▶</i>
+                      Play Quiz
+                    </a>
+                  </div>
+                  <button (click)="deleteResult(result.id!)" class="delete-btn">
+                    <i class="delete-icon">×</i>
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-          
-          <div class="card-actions">
-            <div *ngIf="result.quizUrl" class="quiz-link">
-              <a [href]="result.quizUrl" target="_blank">
-                <i class="play-icon">▶</i>
-                Play Quiz
-              </a>
-            </div>
-            <button (click)="deleteResult(result.id!)" class="delete-btn">
-              <i class="delete-icon">×</i>
-              Delete
-            </button>
           </div>
         </div>
       </div>
@@ -69,11 +84,38 @@ import { AddQuizResultComponent } from '../add-quiz-result/add-quiz-result.compo
       text-align: center;
     }
     
-    .results-list {
-      margin-top: 2rem;
+    .week-group {
+      margin-bottom: 3rem;
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    
+    .week-header {
+      color: #2c3e50;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #e9ecef;
+    }
+    
+    .category-group {
+      margin-bottom: 2rem;
+    }
+    
+    .category-header {
+      color: #34495e;
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      padding-left: 1rem;
+      border-left: 4px solid #3498db;
+    }
+    
+    .category-results {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 1.5rem;
+      padding-left: 1rem;
     }
     
     .result-card {
@@ -130,25 +172,6 @@ import { AddQuizResultComponent } from '../add-quiz-result/add-quiz-result.compo
       font-weight: 500;
     }
     
-    .percentage-container {
-      display: flex;
-      justify-content: center;
-      margin: 1.5rem 0;
-    }
-    
-    .percentage-circle {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-      font-size: 1.25rem;
-      background: linear-gradient(135deg, #3498db, #2980b9);
-    }
-    
     .card-actions {
       display: flex;
       justify-content: space-between;
@@ -197,6 +220,35 @@ import { AddQuizResultComponent } from '../add-quiz-result/add-quiz-result.compo
     .delete-icon {
       font-size: 1.2rem;
     }
+
+    .answer-boxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin: 1rem 0;
+      padding: 0.5rem;
+      background: #f8f9fa;
+      border-radius: 6px;
+    }
+    
+    .answer-box {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      transition: transform 0.2s ease;
+    }
+    
+    .answer-box:hover {
+      transform: scale(1.1);
+    }
+    
+    .answer-box.correct {
+      background: #3498db; /* Blue for correct */
+    }
+    
+    .answer-box.incorrect {
+      background: #e74c3c; /* Red for incorrect */
+    }
   `]
 })
 export class QuizResultsListComponent implements OnInit {
@@ -214,10 +266,41 @@ export class QuizResultsListComponent implements OnInit {
     this.quizResultsService.deleteResult(id);
   }
 
-  getPercentageColor(result: QuizResult): string {
-    const percentage = (result.correctAnswers / result.totalQuestions) * 100;
-    if (percentage >= 80) return 'linear-gradient(135deg, #2ecc71, #27ae60)';
-    if (percentage >= 60) return 'linear-gradient(135deg, #f1c40f, #f39c12)';
-    return 'linear-gradient(135deg, #e74c3c, #c0392b)';
+  getAnswerBoxes(result: QuizResult): number[] {
+    return Array(result.totalQuestions).fill(0).map((_, i) => i);
+  }
+
+  getGroupedResults(): any[] {
+    // First group by week number
+    const weekGroups = this.results.reduce((groups, result) => {
+      const week = result.weekNumber;
+      if (!groups[week]) {
+        groups[week] = [];
+      }
+      groups[week].push(result);
+      return groups;
+    }, {} as { [key: number]: QuizResult[] });
+
+    // Then group each week by category
+    return Object.entries(weekGroups)
+      .map(([week, results]) => {
+        const categoryGroups = results.reduce((groups, result) => {
+          const category = result.category;
+          if (!groups[category]) {
+            groups[category] = [];
+          }
+          groups[category].push(result);
+          return groups;
+        }, {} as { [key: string]: QuizResult[] });
+
+        return {
+          week: parseInt(week),
+          categories: Object.entries(categoryGroups).map(([category, results]) => ({
+            category,
+            results: results.sort((a, b) => b.date.getTime() - a.date.getTime()) // Sort by date within category
+          })).sort((a, b) => a.category.localeCompare(b.category)) // Sort categories alphabetically
+        };
+      })
+      .sort((a, b) => b.week - a.week); // Sort weeks in descending order
   }
 } 

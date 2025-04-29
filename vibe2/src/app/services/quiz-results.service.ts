@@ -13,7 +13,12 @@ export class QuizResultsService {
     // Load saved results from localStorage if available
     const savedResults = localStorage.getItem('quizResults');
     if (savedResults) {
-      this.results = JSON.parse(savedResults);
+      const parsedResults = JSON.parse(savedResults);
+      // Convert date strings back to Date objects
+      this.results = parsedResults.map((result: any) => ({
+        ...result,
+        date: new Date(result.date)
+      }));
       this.resultsSubject.next(this.results);
     }
   }
