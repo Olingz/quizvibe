@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { QuizResultsService } from '../../services/quiz-results.service';
 import { QuizResult } from '../../models/quiz-result.model';
 import { AddQuizResultComponent } from '../add-quiz-result/add-quiz-result.component';
+import { ImportEmailResultsComponent } from '../import-email-results/import-email-results.component';
 
 interface ResultGroup {
   title: string;
@@ -14,7 +15,7 @@ interface ResultGroup {
 @Component({
   selector: 'app-quiz-results-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, AddQuizResultComponent],
+  imports: [CommonModule, FormsModule, RouterModule, AddQuizResultComponent, ImportEmailResultsComponent],
   templateUrl: './quiz-results-list.component.html',
   styleUrl: './quiz-results-list.component.css'
 })
@@ -28,6 +29,7 @@ export class QuizResultsListComponent implements OnInit {
   selectedCategory: string = '';
   selectedPlayer: string = '';
   showAddForm: boolean = false;
+  showImportForm: boolean = false;
 
   constructor(private quizResultsService: QuizResultsService) {}
 
@@ -35,7 +37,7 @@ export class QuizResultsListComponent implements OnInit {
     this.loadResults();
   }
 
-  private loadResults(): void {
+  loadResults(): void {
     this.quizResultsService.getResults().subscribe(results => {
       this.results = results;
       this.updateAvailableFilters();

@@ -1,9 +1,18 @@
 <div class="quiz-results-container">
   <div class="header">
     <h2>Quiz Results</h2>
-    <button (click)="showAddForm = !showAddForm" class="add-button">
-      {{ showAddForm ? 'Cancel' : 'Add New Result' }}
-    </button>
+    <div class="button-group">
+      <button (click)="showAddForm = !showAddForm" class="add-button">
+        {{ showAddForm ? 'Cancel' : 'Add New Result' }}
+      </button>
+      <button (click)="showImportForm = !showImportForm" class="import-button">
+        {{ showImportForm ? 'Cancel' : 'Import from Email' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="import-form" *ngIf="showImportForm">
+    <app-import-email-results (resultsImported)="loadResults()"></app-import-email-results>
   </div>
 
   <div class="add-result-form" *ngIf="showAddForm">

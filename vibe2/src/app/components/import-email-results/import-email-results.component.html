@@ -1,0 +1,31 @@
+<div class="import-container">
+  <h2>Import Quiz Results from Email</h2>
+  <div class="form-group">
+    <label for="emailText">Paste Email Text:</label>
+    <textarea 
+      id="emailText" 
+      name="emailText" 
+      [(ngModel)]="emailText" 
+      (input)="parseEmailText()"
+      placeholder="Paste the email text containing quiz results here..."
+      rows="10"
+    ></textarea>
+  </div>
+
+  <div class="preview" *ngIf="showPreview">
+    <h3>Preview Results</h3>
+    <div *ngFor="let result of parsedResults" class="result-preview">
+      <p><strong>Quiz:</strong> {{ result.quizName }}</p>
+      <p><strong>Category:</strong> {{ result.category }}</p>
+      <p><strong>Week:</strong> {{ result.weekNumber }}</p>
+      <p><strong>Score:</strong> {{ result.correctAnswers }}/{{ result.totalQuestions }}</p>
+      <div class="answer-sequence">
+        <span *ngFor="let isCorrect of result.answerSequence" 
+              [class]="isCorrect ? 'correct' : 'incorrect'">
+          {{ isCorrect ? '✓' : '✗' }}
+        </span>
+      </div>
+    </div>
+    <button (click)="importResults()">Import Results</button>
+  </div>
+</div> 

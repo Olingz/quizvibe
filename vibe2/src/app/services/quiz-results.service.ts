@@ -28,8 +28,8 @@ export class QuizResultsService {
   }
 
   addResult(result: QuizResult): void {
-    result.id = Date.now().toString();
-    result.date = new Date();
+    // Generate a unique ID using timestamp and random number
+    result.id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     this.results.push(result);
     this.saveResults();
   }
