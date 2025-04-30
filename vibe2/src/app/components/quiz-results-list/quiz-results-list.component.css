@@ -263,6 +263,21 @@ select:focus {
   border-color: #2563eb;
 }
 
+.delete-all-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+  font-weight: bold;
+}
+
+.delete-all-button:hover {
+  background-color: #c82333;
+}
+
 @media (max-width: 768px) {
   .quiz-results-container {
     padding: 1rem;
