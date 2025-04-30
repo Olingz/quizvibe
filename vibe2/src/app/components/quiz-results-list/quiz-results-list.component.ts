@@ -30,6 +30,7 @@ export class QuizResultsListComponent implements OnInit {
   selectedPlayer: string = '';
   showAddForm: boolean = false;
   showImportForm: boolean = false;
+  showDeleteAllConfirmation: boolean = false;
 
   constructor(private quizResultsService: QuizResultsService) {}
 
@@ -147,5 +148,12 @@ export class QuizResultsListComponent implements OnInit {
   togglePlayerFilter(player: string): void {
     this.selectedPlayer = this.selectedPlayer === player ? '' : player;
     this.filterResults();
+  }
+
+  deleteAll(): void {
+    if (confirm('Are you sure you want to delete all quiz results? This action cannot be undone.')) {
+      this.quizResultsService.deleteAll();
+      this.loadResults();
+    }
   }
 } 

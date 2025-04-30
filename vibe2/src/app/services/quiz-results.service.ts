@@ -43,4 +43,9 @@ export class QuizResultsService {
     this.results = this.results.filter(result => result.id !== id);
     this.saveResults();
   }
+
+  deleteAll(): void {
+    this.results = [];
+    this.saveResults();
+  }
 } 
