@@ -24,7 +24,7 @@ export class AppComponent {
 
   constructor(
     public authService: AuthService,
-    private router: Router
+    public router: Router
   ) {
     // Redirect to login if not authenticated
     this.authService.user$.subscribe(user => {
