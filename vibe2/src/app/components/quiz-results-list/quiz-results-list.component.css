@@ -154,12 +154,13 @@ select:focus {
 }
 
 .score {
-  background: #e31f26;
-  color: white;
+  background: #f8fafc;
+  color: #475569;
   padding: 0.25rem 0.75rem;
   border-radius: 6px;
   font-weight: 500;
   font-size: 0.875rem;
+  border: 1px solid #e2e8f0;
 }
 
 .result-details {
@@ -194,8 +195,8 @@ select:focus {
 }
 
 .incorrect {
-  background: #ef4444;
-  color: white;
+  background: #fca5a5;
+  color: #991b1b;
 }
 
 .add-result-form {
