@@ -54,23 +54,25 @@
   <div class="results-grid">
     <div *ngFor="let group of filteredResults" class="result-group">
       <h3>{{ group.title }}</h3>
-      <div class="results-list">
-        <div *ngFor="let result of group.results" class="result-card">
-          <div class="result-header">
-            <span class="player-name">{{ result.playerName }}</span>
-            <span class="score">{{ result.correctAnswers }}/{{ result.totalQuestions }}</span>
+      <div *ngFor="let category of group.categories" class="category-group">
+        <h4>{{ category.title }}</h4>
+        <div class="results-list">
+          <div *ngFor="let result of category.results" class="result-card">
+            <div class="result-header">
+              <span class="player-name">{{ result.playerName }}</span>
+              <span class="score">{{ result.correctAnswers }}/{{ result.totalQuestions }}</span>
+            </div>
+            <div class="result-details">
+              <span class="date">{{ result.date | date:'mediumDate' }}</span>
+            </div>
+            <div class="answer-sequence">
+              <span *ngFor="let isCorrect of result.answerSequence" 
+                    [class]="isCorrect ? 'correct' : 'incorrect'">
+                {{ isCorrect ? '✓' : '✗' }}
+              </span>
+            </div>
+            <button class="delete-button" (click)="deleteResult(result.id!)">Delete</button>
           </div>
-          <div class="result-details">
-            <span class="category">{{ result.category }}</span>
-            <span class="date">{{ result.date | date:'mediumDate' }}</span>
-          </div>
-          <div class="answer-sequence">
-            <span *ngFor="let isCorrect of result.answerSequence" 
-                  [class]="isCorrect ? 'correct' : 'incorrect'">
-              {{ isCorrect ? '✓' : '✗' }}
-            </span>
-          </div>
-          <button class="delete-button" (click)="deleteResult(result.id!)">Delete</button>
         </div>
       </div>
     </div>

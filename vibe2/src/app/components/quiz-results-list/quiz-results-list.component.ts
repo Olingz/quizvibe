@@ -7,9 +7,14 @@ import { QuizResult } from '../../models/quiz-result.model';
 import { AddQuizResultComponent } from '../add-quiz-result/add-quiz-result.component';
 import { ImportEmailResultsComponent } from '../import-email-results/import-email-results.component';
 
-interface ResultGroup {
+interface CategoryGroup {
   title: string;
   results: QuizResult[];
+}
+
+interface ResultGroup {
+  title: string;
+  categories: CategoryGroup[];
 }
 
 @Component({
@@ -79,21 +84,29 @@ export class QuizResultsListComponent implements OnInit {
   }
 
   private groupResultsByWeek(results: QuizResult[]): ResultGroup[] {
-    const groups: { [key: number]: QuizResult[] } = {};
+    const groups: { [key: number]: { [key: string]: QuizResult[] } } = {};
     
-    // Group results by week
+    // Group results by week and category
     results.forEach(result => {
       if (!groups[result.weekNumber]) {
-        groups[result.weekNumber] = [];
+        groups[result.weekNumber] = {};
       }
-      groups[result.weekNumber].push(result);
+      if (!groups[result.weekNumber][result.category]) {
+        groups[result.weekNumber][result.category] = [];
+      }
+      groups[result.weekNumber][result.category].push(result);
     });
 
     // Convert to array and sort by week number
     return Object.entries(groups)
-      .map(([week, results]) => ({
+      .map(([week, categoryGroups]) => ({
         title: `Week ${week}`,
-        results: results.sort((a, b) => b.correctAnswers - a.correctAnswers)
+        categories: Object.entries(categoryGroups)
+          .map(([category, results]) => ({
+            title: category,
+            results: results.sort((a, b) => b.correctAnswers - a.correctAnswers)
+          }))
+          .sort((a, b) => a.title.localeCompare(b.title))
       }))
       .sort((a, b) => parseInt(b.title.split(' ')[1]) - parseInt(a.title.split(' ')[1]));
   }

@@ -67,9 +67,9 @@ export class ImportEmailResultsComponent {
       }
 
       // Check for emoji sequence (quiz answers)
-      if (line.match(/[✅⬛️🟦🟥]/)) {
+      if (line.match(/[✅⬛️🟦🟥✔❌️]/)) {
         const answerSequence = line.split(' ').map(symbol => {
-          return symbol === '✅' || symbol === '🟦';
+          return symbol === '✅' || symbol === '🟦' || symbol === '✔';
         });
         
         currentResult = {
@@ -82,15 +82,29 @@ export class ImportEmailResultsComponent {
       
       // Check for score line
       else if (line.includes('ud af') && line.includes('rigtige')) {
-        const match = line.match(/Jeg fik (\d+) ud af (\d+) rigtige i (.+)(?:'s)? (.+)/);
+        console.log('Found quiz line:', line);
+        const match = line.match(/Jeg fik (\d+) ud af (\d+) rigtige i (?:DR's )?(.+?)(?:quiz|Quiz)/);
         if (match) {
+          console.log('Matched quiz:', match);
+          let category = match[3].toLowerCase();
+          console.log('Original category:', category);
+          // Normalize category names
+          if (category.includes('sport')) {
+            category = 'Sport';
+          } else if (category.includes('nyhed')) {
+            category = 'Nyheder';
+          } else if (category.includes('p3')) {
+            category = 'P3';
+          }
+          console.log('Normalized category:', category);
+          
           currentResult = {
             ...currentResult,
             playerName: this.currentPlayerName,
-            quizName: match[4],
-            category: match[3],
+            quizName: match[3] + ' Quiz',
+            category: category,
             weekNumber: this.getWeekNumber(this.currentDate),
-            quizUrl: this.getQuizUrl(match[3], match[4]),
+            quizUrl: this.getQuizUrl(category, match[3]),
             date: this.currentDate
           };
           
@@ -98,6 +112,8 @@ export class ImportEmailResultsComponent {
             this.parsedResults.push(currentResult as QuizResult);
             currentResult = {};
           }
+        } else {
+          console.log('No match for line:', line);
         }
       }
     }
@@ -112,7 +128,7 @@ export class ImportEmailResultsComponent {
   }
 
   private getQuizUrl(category: string, quizName: string): string {
-    if (category.toLowerCase() === 'dr' && quizName.toLowerCase() === 'nyhedsquiz') {
+    if (category.toLowerCase() === 'dr' && quizName.toLowerCase() === 'nyhederquiz') {
       return 'www.dr.dk/quiz/nyheder/';
     } else if (category.toLowerCase() === 'p3') {
       return 'www.dr.dk/quiz/p3/';

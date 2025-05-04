@@ -297,4 +297,29 @@ select:focus {
   .results-list {
     grid-template-columns: 1fr;
   }
+}
+
+.category-group {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.category-group h4 {
+  margin: 0 0 1rem 0;
+  color: #495057;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.result-group {
+  margin-bottom: 2rem;
+}
+
+.result-group h3 {
+  margin-bottom: 1rem;
+  color: #212529;
+  font-size: 1.3rem;
+  font-weight: 600;
 } 
