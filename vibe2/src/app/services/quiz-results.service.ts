@@ -132,4 +132,18 @@ export class QuizResultsService {
       return [];
     }
   }
+
+  async updateResult(result: QuizResult): Promise<void> {
+    if (!result.id) return;
+    const resultDoc = doc(this.resultsCollection, result.id);
+    const { id, ...updateData } = result;
+    try {
+      await import('firebase/firestore').then(firestore =>
+        firestore.updateDoc(resultDoc, updateData)
+      );
+      console.log('Result updated:', result.id);
+    } catch (error) {
+      console.error('Error updating result:', error);
+    }
+  }
 } 

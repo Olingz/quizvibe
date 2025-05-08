@@ -73,10 +73,48 @@
                 {{ isCorrect ? '✓' : '✗' }}
               </span>
             </div>
+            <button class="edit-button" (click)="confirmEdit(result)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"/></svg>
+            </button>
             <button class="delete-button" (click)="deleteResult(result.id!)">Delete</button>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="edit-modal-backdrop" *ngIf="editingResult">
+    <div class="edit-modal">
+      <h3>Edit Quiz Result</h3>
+      <form (ngSubmit)="saveEdit()">
+        <div class="form-group">
+          <label>Category:</label>
+          <select [(ngModel)]="editingResult.category" name="category" required>
+            <option value="Sport">Sport</option>
+            <option value="P3">P3</option>
+            <option value="Nyheder">Nyheder</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Week Number:</label>
+          <input type="number" [(ngModel)]="editingResult.weekNumber" name="weekNumber" min="1" required />
+        </div>
+        <div class="form-group">
+          <label>Answer Sequence:</label>
+          <div class="edit-answer-sequence">
+            <span *ngFor="let isCorrect of editingResult.answerSequence; let i = index"
+                  (click)="toggleAnswer(i)"
+                  [class.correct]="isCorrect"
+                  [class.incorrect]="!isCorrect">
+              {{ isCorrect ? '✓' : '✗' }}
+            </span>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="save-edit">Save</button>
+          <button type="button" class="cancel-edit" (click)="cancelEdit()">Cancel</button>
+        </div>
+      </form>
     </div>
   </div>
 </div> 

@@ -330,4 +330,145 @@ select:focus {
   color: #212529;
   font-size: 1.3rem;
   font-weight: 600;
+}
+
+.edit-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.25);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-modal {
+  background: #fff;
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  min-width: 320px;
+  max-width: 95vw;
+}
+
+.edit-modal h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.edit-modal .form-group {
+  margin-bottom: 1.25rem;
+}
+
+.edit-modal label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.edit-modal input[type="number"],
+.edit-modal input[type="text"] {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.edit-modal input:focus {
+  outline: none;
+  border-color: #e31f26;
+  box-shadow: 0 0 0 2px rgba(227, 31, 38, 0.08);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.save-edit {
+  background: #e31f26;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.save-edit:hover {
+  background: #c71f25;
+}
+.cancel-edit {
+  background: #f3f4f6;
+  color: #222;
+  border: 1px solid #e2e8f0;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+}
+.cancel-edit:hover {
+  background: #e2e8f0;
+  border: 1px solid #bdbdbd;
+}
+
+.edit-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  margin-right: 0.2rem;
+  position: relative;
+  top: 2px;
+  transition: background 0.2s;
+}
+.edit-button:hover svg {
+  stroke: #e31f26;
+}
+
+.edit-answer-sequence {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.edit-answer-sequence span {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid #e2e8f0;
+  user-select: none;
+  transition: background 0.15s, border 0.15s;
+}
+.edit-answer-sequence span.correct {
+  background: #10b981;
+  color: #fff;
+  border-color: #10b981;
+}
+.edit-answer-sequence span.incorrect {
+  background: #fca5a5;
+  color: #991b1b;
+  border-color: #fca5a5;
+}
+.edit-answer-sequence span:hover {
+  filter: brightness(0.95);
+  border-color: #e31f26;
 } 

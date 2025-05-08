@@ -36,6 +36,7 @@ export class QuizResultsListComponent implements OnInit {
   showAddForm: boolean = false;
   showImportForm: boolean = false;
   showDeleteAllConfirmation: boolean = false;
+  editingResult: QuizResult | null = null;
 
   constructor(private quizResultsService: QuizResultsService) {}
 
@@ -167,6 +168,36 @@ export class QuizResultsListComponent implements OnInit {
     if (confirm('Are you sure you want to delete all quiz results? This action cannot be undone.')) {
       this.quizResultsService.deleteAll();
       this.loadResults();
+    }
+  }
+
+  confirmEdit(result: QuizResult): void {
+    if (confirm('Are you sure you want to edit this quiz result?')) {
+      this.editingResult = { ...result };
+      // You can now show an edit form/modal for editingResult
+    }
+  }
+
+  saveEdit(): void {
+    if (this.editingResult) {
+      // Update correctAnswers based on answerSequence
+      if (this.editingResult.answerSequence) {
+        this.editingResult.correctAnswers = this.editingResult.answerSequence.filter(Boolean).length;
+      }
+      this.quizResultsService.updateResult(this.editingResult).then(() => {
+        this.editingResult = null;
+        this.loadResults();
+      });
+    }
+  }
+
+  cancelEdit(): void {
+    this.editingResult = null;
+  }
+
+  toggleAnswer(i: number): void {
+    if (this.editingResult && this.editingResult.answerSequence) {
+      this.editingResult.answerSequence[i] = !this.editingResult.answerSequence[i];
     }
   }
 } 
