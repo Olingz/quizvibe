@@ -6,6 +6,7 @@ import { QuizResultsService } from '../../services/quiz-results.service';
 import { QuizResult } from '../../models/quiz-result.model';
 import { AddQuizResultComponent } from '../add-quiz-result/add-quiz-result.component';
 import { ImportEmailResultsComponent } from '../import-email-results/import-email-results.component';
+import { environment } from '../../../environments/environment';
 
 interface CategoryGroup {
   title: string;
@@ -37,6 +38,9 @@ export class QuizResultsListComponent implements OnInit {
   showImportForm: boolean = false;
   showDeleteAllConfirmation: boolean = false;
   editingResult: QuizResult | null = null;
+  playerStats: any[] = [];
+  showStats: boolean = false;
+  public environment = environment;
 
   constructor(private quizResultsService: QuizResultsService) {}
 
@@ -49,6 +53,7 @@ export class QuizResultsListComponent implements OnInit {
       this.results = results;
       this.updateAvailableFilters();
       this.filterResults();
+      this.computePlayerStats();
     });
   }
 
@@ -199,5 +204,36 @@ export class QuizResultsListComponent implements OnInit {
     if (this.editingResult && this.editingResult.answerSequence) {
       this.editingResult.answerSequence[i] = !this.editingResult.answerSequence[i];
     }
+  }
+
+  computePlayerStats(): void {
+    const statsMap: { [player: string]: { totalQuizzes: number, totalCorrect: number, totalQuestions: number, categoryCorrect: { [cat: string]: number } } } = {};
+    for (const result of this.results) {
+      if (!statsMap[result.playerName]) {
+        statsMap[result.playerName] = { totalQuizzes: 0, totalCorrect: 0, totalQuestions: 0, categoryCorrect: {} };
+      }
+      const s = statsMap[result.playerName];
+      s.totalQuizzes++;
+      s.totalCorrect += result.correctAnswers;
+      s.totalQuestions += result.totalQuestions;
+      if (!s.categoryCorrect[result.category]) s.categoryCorrect[result.category] = 0;
+      s.categoryCorrect[result.category] += result.correctAnswers;
+    }
+    this.playerStats = Object.entries(statsMap).map(([player, s]) => {
+      let bestCategory = '-';
+      let maxCorrect = -1;
+      for (const cat in s.categoryCorrect) {
+        if (s.categoryCorrect[cat] > maxCorrect) {
+          maxCorrect = s.categoryCorrect[cat];
+          bestCategory = cat;
+        }
+      }
+      return {
+        player,
+        totalQuizzes: s.totalQuizzes,
+        avgScore: s.totalQuizzes ? (s.totalCorrect / s.totalQuestions * 100).toFixed(1) + '%' : '-',
+        bestCategory
+      };
+    });
   }
 } 

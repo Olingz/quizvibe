@@ -13,6 +13,7 @@
   </div>
 
   <div class="preview" *ngIf="showPreview">
+    <button (click)="importResults()">Import Results</button>
     <h3>Preview Results</h3>
     <div *ngFor="let result of parsedResults" class="result-preview">
       <p><strong>Quiz:</strong> {{ result.quizName }}</p>
@@ -26,6 +27,5 @@
         </span>
       </div>
     </div>
-    <button (click)="importResults()">Import Results</button>
   </div>
 </div> 
