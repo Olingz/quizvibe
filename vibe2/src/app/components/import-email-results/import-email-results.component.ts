@@ -25,39 +25,52 @@ export class ImportEmailResultsComponent {
     this.parsedResults = [];
     const lines = this.emailText.split('\n');
     let currentResult: Partial<QuizResult> = {};
+    let tempAnswerSequence: boolean[] | null = null;
+    let tempTotalQuestions: number | null = null;
     
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
       
-      // Extract player name and date from email header
+      // Extract player name from email header
       if (line.includes('@') && !line.includes('To:')) {
         const nameMatch = line.match(/^(.+?) <(.+?)>/);
         if (nameMatch) {
           this.currentPlayerName = nameMatch[1].trim();
         }
+        // Do not continue here, so date parsing runs for all lines
+      }
 
-        // Extract date from the same line
-        const dateMatch = line.match(/(Mon|Tue|Wed|Thu|Fri|Sat|Sun), (\w+) (\d+), (\d{4}) at (\d+):(\d+) (AM|PM)/);
-        if (dateMatch) {
-          const [_, day, month, date, year, hours, minutes, period] = dateMatch;
-          const monthMap: { [key: string]: number } = {
-            'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
-            'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
-          };
-          let hour = parseInt(hours);
-          if (period === 'PM' && hour !== 12) {
-            hour += 12;
-          } else if (period === 'AM' && hour === 12) {
-            hour = 0;
-          }
-          this.currentDate = new Date(
+      // Parse date if line contains a date format, especially after a tab
+      let datePart = line;
+      if (line.includes('\t')) {
+        const parts = line.split('\t');
+        if (parts.length > 1) {
+          datePart = parts[1].trim();
+        }
+      }
+      let dateMatch = datePart.match(/(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s*(\w+)\s*(\d+),\s*(\d{4}) at (\d+):(\d+) (AM|PM)/);
+      if (dateMatch) {
+        const [_, day, month, date, year, hours, minutes, period] = dateMatch;
+        const monthMap: { [key: string]: number } = {
+          'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+          'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+        };
+        let hour = parseInt(hours);
+        if (period === 'PM' && hour !== 12) {
+          hour += 12;
+        } else if (period === 'AM' && hour === 12) {
+          hour = 0;
+        }
+        this.currentDate = new Date(
+          Date.UTC(
             parseInt(year),
             monthMap[month],
             parseInt(date),
             hour,
             parseInt(minutes)
-          );
-        }
+          )
+        );
+        console.log('Parsed date:', this.currentDate, 'from line:', line);
         continue;
       }
 
@@ -68,20 +81,16 @@ export class ImportEmailResultsComponent {
 
       // Check for emoji sequence (quiz answers)
       if (line.match(/[✅⬛️🟦🟥✔❌️]/)) {
-        const answerSequence = line.split(' ').map(symbol => {
+        tempAnswerSequence = line.split(' ').map(symbol => {
           return symbol === '✅' || symbol === '🟦' || symbol === '✔';
         });
-        
-        currentResult = {
-          answerSequence,
-          totalQuestions: answerSequence.length,
-          correctAnswers: answerSequence.filter(Boolean).length,
-          date: this.currentDate
-        };
+        tempTotalQuestions = tempAnswerSequence.length;
+        console.log('Parsed answer sequence:', tempAnswerSequence, 'from line:', line);
+        continue;
       }
       
       // Check for score line
-      else if (line.includes('ud af') && line.includes('rigtige')) {
+      else if (line.includes('ud af') && line.includes('rigtige') && tempAnswerSequence) {
         console.log('Found quiz line:', line);
         const match = line.match(/Jeg fik (\d+) ud af (\d+) rigtige i (?:DR's )?(.+?)(?:quiz|Quiz)/);
         if (match) {
@@ -99,7 +108,9 @@ export class ImportEmailResultsComponent {
           console.log('Normalized category:', category);
           
           currentResult = {
-            ...currentResult,
+            answerSequence: tempAnswerSequence,
+            totalQuestions: tempTotalQuestions!,
+            correctAnswers: tempAnswerSequence.filter(Boolean).length,
             playerName: this.currentPlayerName,
             quizName: match[3] + ' Quiz',
             category: category,
@@ -107,11 +118,11 @@ export class ImportEmailResultsComponent {
             quizUrl: this.getQuizUrl(category, match[3]),
             date: this.currentDate
           };
-          
-          if (Object.keys(currentResult).length === 9) {
-            this.parsedResults.push(currentResult as QuizResult);
-            currentResult = {};
-          }
+          console.log('Pushing result:', currentResult);
+          this.parsedResults.push(currentResult as QuizResult);
+          tempAnswerSequence = null;
+          tempTotalQuestions = null;
+          currentResult = {};
         } else {
           console.log('No match for line:', line);
         }

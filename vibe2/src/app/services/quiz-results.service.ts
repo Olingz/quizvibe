@@ -30,7 +30,9 @@ export class QuizResultsService {
         console.log('Raw results from Firestore:', results);
         return results.map(result => ({
           ...result,
-          date: (result as any).date?.toDate() || new Date()
+          date: (result as any).date && typeof (result as any).date.toDate === 'function'
+            ? (result as any).date.toDate()
+            : (result as any).date || new Date()
         }));
       })
     ).subscribe({
@@ -48,7 +50,7 @@ export class QuizResultsService {
     console.log('Adding new result:', result);
     const resultWithDate = {
       ...result,
-      date: new Date()
+      date: result.date ? result.date : new Date()
     };
     try {
       const docRef = await addDoc(this.resultsCollection, resultWithDate);
