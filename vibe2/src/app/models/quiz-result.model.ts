@@ -9,4 +9,5 @@ export interface QuizResult {
   answerSequence: boolean[]; // true for correct, false for incorrect
   date: Date;
   quizUrl?: string;
+  email?: string;
 } 

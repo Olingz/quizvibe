@@ -39,6 +39,9 @@ export class AddQuizResultComponent implements OnInit {
     } else if (currentUser?.email) {
       this.newResult.playerName = currentUser.email;
     }
+    if (currentUser?.email) {
+      this.newResult.email = currentUser.email;
+    }
   }
 
   parseQuizText(): void {
@@ -135,7 +138,8 @@ export class AddQuizResultComponent implements OnInit {
       category: '',
       correctAnswers: 0,
       totalQuestions: 0,
-      quizUrl: ''
+      quizUrl: '',
+      email: ''
     };
     this.resultAdded.emit();
   }
