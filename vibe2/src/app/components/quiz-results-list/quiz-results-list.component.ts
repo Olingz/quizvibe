@@ -207,10 +207,10 @@ export class QuizResultsListComponent implements OnInit {
   }
 
   computePlayerStats(): void {
-    const statsMap: { [player: string]: { totalQuizzes: number, totalCorrect: number, totalQuestions: number, categoryCorrect: { [cat: string]: number } } } = {};
+    const statsMap: { [player: string]: { totalQuizzes: number, totalCorrect: number, totalQuestions: number, categoryCorrect: { [cat: string]: number }, perfectQuizzes: number } } = {};
     for (const result of this.results) {
       if (!statsMap[result.playerName]) {
-        statsMap[result.playerName] = { totalQuizzes: 0, totalCorrect: 0, totalQuestions: 0, categoryCorrect: {} };
+        statsMap[result.playerName] = { totalQuizzes: 0, totalCorrect: 0, totalQuestions: 0, categoryCorrect: {}, perfectQuizzes: 0 };
       }
       const s = statsMap[result.playerName];
       s.totalQuizzes++;
@@ -218,6 +218,9 @@ export class QuizResultsListComponent implements OnInit {
       s.totalQuestions += result.totalQuestions;
       if (!s.categoryCorrect[result.category]) s.categoryCorrect[result.category] = 0;
       s.categoryCorrect[result.category] += result.correctAnswers;
+      if (result.correctAnswers === result.totalQuestions && result.totalQuestions > 0) {
+        s.perfectQuizzes++;
+      }
     }
     this.playerStats = Object.entries(statsMap).map(([player, s]) => {
       let bestCategory = '-';
@@ -232,7 +235,8 @@ export class QuizResultsListComponent implements OnInit {
         player,
         totalQuizzes: s.totalQuizzes,
         avgScore: s.totalQuizzes ? (s.totalCorrect / s.totalQuestions * 100).toFixed(1) + '%' : '-',
-        bestCategory
+        bestCategory,
+        perfectQuizzes: s.perfectQuizzes
       };
     });
   }

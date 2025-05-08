@@ -1,0 +1,13 @@
+{
+  "hosting": {
+  "public": "vibe2/dist/vibe2/browser",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      { "source": "**", "destination": "/index.html" }
+    ]
+  }
+}
