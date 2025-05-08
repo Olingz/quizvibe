@@ -3,7 +3,7 @@
     <div class="header-content">
       <h1>Jonas and Oliver's DR Quiz Tracker</h1>
       <div class="auth-controls" *ngIf="authService.isAuthenticated() && !router.url.includes('login')">
-        <span class="user-name">{{ authService.getCurrentUser()?.displayName || 'User' }}</span>
+        <span class="user-name">{{ authService.getCurrentUser()?.displayName || authService.getCurrentUser()?.email || 'User' }}</span>
         <button (click)="logout()">Logout</button>
       </div>
     </div>

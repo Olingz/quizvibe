@@ -3,7 +3,7 @@
   <form (ngSubmit)="onSubmit()" #quizForm="ngForm">
     <div class="form-group">
       <label for="playerName">Player Name:</label>
-      <input type="text" id="playerName" name="playerName" [(ngModel)]="newResult.playerName" readonly>
+      <div id="playerName" class="player-name-display">{{ newResult.playerName }}</div>
     </div>
     
     <div class="form-group">

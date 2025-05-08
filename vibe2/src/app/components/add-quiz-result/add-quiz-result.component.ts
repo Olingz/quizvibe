@@ -32,10 +32,12 @@ export class AddQuizResultComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Pre-fill player name with logged-in user's display name
+    // Pre-fill player name with logged-in user's display name or email
     const currentUser = this.authService.getCurrentUser();
     if (currentUser?.displayName) {
       this.newResult.playerName = currentUser.displayName;
+    } else if (currentUser?.email) {
+      this.newResult.playerName = currentUser.email;
     }
   }
 

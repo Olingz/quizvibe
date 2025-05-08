@@ -43,21 +43,28 @@ h3 {
 .button-group {
   display: flex;
   gap: 1rem;
+  border-bottom: none;
+  background: none;
+  padding-bottom: 0;
 }
 
 .add-button, .import-button {
-  background: #4a6cf7;
-  color: white;
-  border: none;
+  background: #fff;
+  color: #222;
+  border: 1.5px solid #e2e8f0;
   padding: 0.75rem 1.5rem;
-  border-radius: 6px;
+  border-radius: 8px;
   font-weight: 500;
+  font-size: 0.95rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: border 0.2s, color 0.2s, background 0.2s;
+  box-shadow: none;
 }
 
 .add-button:hover, .import-button:hover {
-  background: #3b5bd9;
+  border: 1.5px solid #bdbdbd;
+  color: #111;
+  background: #f8fafc;
 }
 
 .import-form {
